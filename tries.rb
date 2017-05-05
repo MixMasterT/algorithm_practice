@@ -44,7 +44,7 @@ class Trie
   end
 
   def count_words(str, start_node = self.root, idx = 0)
-      if idx = str.length
+      if idx == str.length
           count_child_words(start_node)
       else
           if start_node.children[str[idx]]
@@ -82,10 +82,13 @@ end
 
 if __FILE__ == $0
   t = Trie.new
-  t.add_word('dog', t.root)
-  t.add_word('dot', t.root)
-  t.add_word('cat')
-  t.show
-  puts t.count_child_words(t.find_node('g'))
-
+  # t.add_word('dog', t.root)
+  # t.add_word('dot', t.root)
+  # t.add_word('cat')
+  # t.show
+  # puts t.count_child_words(t.find_node('g'))
+  t.add_word('hack')
+  t.add_word('hackerank')
+  puts t.count_words('h')
+  puts t.count_words('hacker')
 end
