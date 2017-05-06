@@ -21,52 +21,42 @@ function partitionRecursive(x) {
   }
 }
 
-function partitionRecursiveMemoized(x) {
+function generateMemoizedPartitioner() {
   var partsCache = partsCache || {};
 
-  if (partsCache[x]) { return partsCache[x]; }
-  else {
-    if (x <= 0) { return []; }
-    if (x === 1) { return [[1]]; }
+  return function recursivePartitioner(x) {
+
+    if (partsCache[x]) { return partsCache[x]; }
 
     else {
-      const parts = [[x]];
-      if (x > 1) {
-        for (let i = 1; i < x; i++) {
-          const diff = x - i;
 
-          const subParts = partitionRecursiveMemoized(i);
-          subParts.forEach((sP) => {
-            if (sP.every((v) => v <= diff)) {
-              parts.push([diff, ...sP]);
-            }
-          })
+      if (x <= 0) { return []; }
+      if (x === 1) { return [[1]]; }
+
+      else {
+        const parts = [[x]];
+        if (x > 1) {
+          for (let i = 1; i < x; i++) {
+            const diff = x - i;
+
+            const subParts = recursivePartitioner(i);
+            subParts.forEach((sP) => {
+              if (sP.every((v) => v <= diff)) {
+                parts.push([diff, ...sP]);
+              }
+            })
+          }
         }
+        partsCache[x] = parts;
+        return parts;
       }
-      partsCache[x] = parts;
-      return parts;
     }
   }
 }
 
 function partitionDynamic(x) {
-  if (x < 1) { return []; }
-  let parts = [[x]];
-
-  let i = 1;
-  while (i < x) {
-    const lastPart = parts.slice(parts.length - 1, 1)
-    console.log("i = ", i);
-    console.log(lastPart);
-    parts = parts.forEach((p, idx) => {
-      const incrementedPart = p.slice();
-      incrementedParts[idx]++;
-      return incrementedParts;
-    })
-    parts.push(lastPart.push(1));
-    i++;
-  }
-  return parts;
+  const dynamicPartitioner = generateMemoizedPartitioner();
+  return dynamicPartitioner(x)
 }
 
 // console.log(partitionDynamic(1));
@@ -76,6 +66,12 @@ function partitionDynamic(x) {
   // console.log(partitionRecursive(5));
   //
   // console.log(partitionRecursive(4));
-  console.log(partitionRecursiveMemoized(3));
+  // console.log(partitionRecursiveMemoized(3));
+  // console.log(partitionDynamic(1));
+  // console.log(partitionDynamic(2));
+  // console.log(partitionDynamic(3));
   // console.log(partitionRecursiveMemoized(10));
-  // console.log(partitionRecursiveMemoized(30).length);
+  // const memParts = generateMemoizedPartitioner();
+  // console.log(memParts(30).length);
+  // console.log(partitionRecursive(25).length);
+  console.log(partitionDynamic(50).length);
