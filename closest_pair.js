@@ -1,3 +1,10 @@
+const sameXEdgeCase = [
+  [5,1],
+  [5,5],
+  [5,7],
+  [5,19],
+]
+
 const simpleSet = [
   [4,1],
   [5,2],
@@ -42,18 +49,21 @@ const hardSet = [
   [0,0],
   [5,5],
   [8,5],
-  [5,3],
+  [5,2],
+  [2,5],
+  [3,9],
+  [4,7],
 ]
 /*
 /* closest = 4,1 - 5,2
-9
+9    X
 8
-7
+7      X
 6
-5        X     X
+5  X     X     X
 4
-3        X
-2
+3
+2        X
 1
 X1 2 3 4 5 6 7 8 9
 */
@@ -78,6 +88,21 @@ function orderedSearch(ordPtsArr){
       return getDist(ordPtsArr[0], ordPtsArr[1]);
     }
     const xMid = (ordPtsArr[ordPtsArr.length - 1][0] + ordPtsArr[0][0]) / 2;
+
+    if (xMid === ordPtsArr[0][0]) { // handle case where all pts have same x value
+      const yOrderedArr = ordPtsArr.sort((p1, p2) => p1[1] - p2[1]);
+      let minDist = yOrderedArr[1][1] - yOrderedArr[0][1];
+      yOrderedArr.forEach((pt, idx) => {
+        if (idx > 1) {
+          const currentDist = pt[1] - yOrderedArr[idx - 1][1];
+          if (currentDist < minDist) {
+            minDist = currentDist;
+          }
+        }
+      })
+      return minDist;
+    }
+
     console.log(xMid, ordPtsArr);
     const leftClosest = orderedSearch(ordPtsArr.filter((pt) => pt[0] < xMid));
     const rightClosest = orderedSearch(ordPtsArr.filter((pt) => pt[0] >= xMid));
@@ -124,18 +149,12 @@ function orderedSearch(ordPtsArr){
               }
             }
           })
-
-
-
-
       }
     }
 
-    // if (ordPtsArr.length === 3) {
-    //
-    // }
   return minDist;
   }
 }
 
 console.log(closestPair(hardSet));
+console.log(closestPair(sameXEdgeCase));
