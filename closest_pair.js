@@ -15,26 +15,26 @@ const simpleSet = [
 
 const biggerSet = [
   [4,1],
-  [5,2],
+  [4,6],
   [1,5],
-  [3,3],
+  [9,9],
   [0,0],
-  [7,8],
+  [0,0],
   [3,9],
-  [4,8],
   [9,1],
-  [6,2],
+  [6,3],
+  [90,70],
 ]
 /* closest = 4,1 - 5,2
-9    X
-8      X     X
+9    X           X
+8
 7
-6
+6      X         X
 5X
 4
-3    X
-2        X X
-1      X         1
+3          X
+2
+1      X         X
 X1 2 3 4 5 6 7 8 9
 */
 
@@ -57,8 +57,8 @@ const hardSet = [
 5  X     X     X
 4
 3
-2        X
-1      X
+2      X X
+1
 X1 2 3 4 5 6 7 8 9
 */
 
@@ -100,7 +100,7 @@ function orderedSearch(ordPtsArr){
       return getDist(ordPtsArr[0], ordPtsArr[1]);
     }
     const xMid = (ordPtsArr[ordPtsArr.length - 1][0] + ordPtsArr[0][0]) / 2;
-    console.log(xMid);
+    // console.log(xMid);
 
     if (ordPtsArr[0][0] === xMid) {
       // all points are along same x coord
@@ -131,6 +131,7 @@ function orderedSearch(ordPtsArr){
 
         if (leftStripPoints.length === 1 && rightStripPoints.length === 1) {
           const stripDist = getDist(leftStripPoints[0], rightStripPoints[0]);
+          // console.log("exactly two matched");
           return Math.min(stripDist, minDist);
         } else {
 
@@ -139,6 +140,9 @@ function orderedSearch(ordPtsArr){
 
           const ySortedRightStripPoints = rightStripPoints.slice();
           ySortedRightStripPoints.sort((p1, p2) => p1[1] - p2[1]);
+
+          // console.log(ySortedRightStripPoints);
+          // console.log(ySortedLeftStripPoints);
 
           let rightPointer = 0;
           leftStripPoints.forEach((pt, leftPointer) => {
@@ -152,12 +156,21 @@ function orderedSearch(ordPtsArr){
               if (currentDist < minDist) {
                 minDist = currentDist;
               }
+              // console.log("current point is: ", pt);
+              // console.log(`rightPointer: ${rightPointer}, rightPoint is ${ySortedRightStripPoints[rightPointer]}`);
               rightPointer++;
             }
+
             if (leftPointer < ySortedLeftStripPoints.length - 1) {
               const nextLeft = ySortedLeftStripPoints[leftPointer + 1];
-              while (ySortedRightStripPoints[rightPointer] &&
-                ySortedRightStripPoints[rightPointer][1] > nextLeft[1]) {
+              // console.log("next left = ", nextLeft);
+
+              // lower rightPointer down to either 0 or one past the lowest index within minDist
+              // of nextLeft[1] ( y-axis )
+              while (
+                rightPointer >= ySortedRightStripPoints.length ||
+                rightPointer > 0 && ySortedRightStripPoints[rightPointer][1] >= nextLeft[1] - minDist
+              ) {
                 rightPointer--;
               }
             }
@@ -169,5 +182,17 @@ function orderedSearch(ordPtsArr){
   }
 }
 
-
+console.log("hardSet");
 console.log(closestPair(hardSet));
+console.log(closestPair(hardSet) === 1);
+console.log("simpleSet");
+console.log(closestPair(simpleSet));
+console.log(closestPair(simpleSet) === 1.4142135623730951);
+console.log('biggerSet');
+console.log(closestPair(biggerSet));
+// sqrt of 2
+console.log(closestPair(biggerSet) === 2.8284271247461903);
+console.log('degenerateSet');
+console.log(closestPair(degenerateSet));
+console.log(closestPair(degenerateSet) === 1);
+// console.log(closestPair(hardSet));
