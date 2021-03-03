@@ -17,17 +17,16 @@ def merge(*arrays)
   return arrays[0] if arrays.length <= 1
   # If not Base Case... crunch away
   merged_remains = []
+  # first, peel off and merge the first two elements
   first = arrays.shift
   second = arrays.shift
-  # Apply merge_two logic which is the main workhorse of this algorithm
+  # Apply merge_two logic -- the main workhorse of this algorithm
   merged_remains << recursive_merge_two(first, second)
-
-  # Without this check the following line will shovel nil into merged_remains
-  if arrays.length > 0
+  
+  if arrays.length > 0 # prevent recursing on empty remains
     merged_remains << merge(*arrays)
   end
 
-  # p "merged_remains --> ", merged_remains
   return merge(*merged_remains)
 end
 
@@ -63,7 +62,4 @@ if __FILE__ == $0
   p merge_sort([2, 3, 1])
   p merge_sort([5, 2, 0, 8])
   p merge_sort([5, 2, 6, 9, 22, 0, 8])
-
-  # p merge_two([1,4,6], [0, 5, 9])
-  p recursive_merge_two([1,4,6], [0, 5, 9])
 end
